@@ -10,9 +10,15 @@ let prev_assignment = picked_assignment;
 let hangang;
 let other_cnt = 0;
 
+let eyeCenterX = 473;
+let eyeCenterY = 512;
+
 let vector_arr = new Array();
 
+let vector_arr_inc = new Array();
+
 function setup() {
+
   createCanvas(1000, 1000);
   bezier_val[0] = height/2 - 60;
   bezier_val[1] = height/2 - 250;
@@ -51,7 +57,11 @@ function setup() {
   vector_arr[18] = createVector(753,611);
   vector_arr[19] = createVector(840,586);
   vector_arr[20] = createVector(868,574);
-  completed_assignment = 5;
+
+  for(var i = 0; i < 21; i++){
+    vector_arr_inc[i] = createVector(abs(vector_arr[i].x - eyeCenterX)/int(random(10000,60000)), abs(vector_arr[i].y - eyeCenterY)/int(random(1000,60000)));
+  }
+
   input = createInput();
   input.position(width/2 - 140, height*3/4 + 1.5);
   button = createButton("과제 제출");
@@ -64,10 +74,16 @@ function draw() {
   input.position(width/2 - 140, height*3/4 + 1.5);
   button.position(width/2 + 60, height*3/4);
   background(0);
-  strokeWeight(0);
   textSize(40);
   fill(255);
-  
+
+  vector_arr_inc[0].x += vector_arr_inc[0].x;
+  vector_arr_inc[0].y += vector_arr_inc[0].y;
+  text(vector_arr_inc[0].y, width/2, height/2);
+  strokeWeight(10);
+  point(vector_arr[0].x + vector_arr_inc[0].x, vector_arr[0].y + vector_arr_inc[0].y);
+
+  strokeWeight(0);
   if(assignment == assignment_arr[picked_assignment] && completed_assignment < 5){ // 과제 제출에 성공 && 과제 제출량이 5미만이면 다음 과제를 낸다.
     if(prev_assignment != 0 && prev_assignment != 13){
       picked_assignment = random(0,1)<0.5 ? int(random(0, prev_assignment)) : int(random(prev_assignment, 13)) ;
@@ -97,7 +113,7 @@ function draw() {
     input.position(10000, 10000);
     button.position(10000, 10000);
     text("5초간 휴식, 현재 "+week+" 주차", width/3.6, height/6);
-    other_cnt += 0.013; text(other_cnt, width/2, height/2);
+    other_cnt += 0.013;
     if(other_cnt > 5){
       completed_assignment = 0;
     }
@@ -108,11 +124,14 @@ function draw() {
 
   noFill();
   eyeStateChange();
+  stroke(255);
   strokeWeight(8);
   bezier(width/2 - 380, bezier_val[0], width/2-200, bezier_val[1], width/2+80, bezier_val[2], width/2 + 365, bezier_val[3]);
   strokeWeight(10);
   bezier(width/2 - 400, height/2+30, bezier_val[4], bezier_val[5], bezier_val[6], bezier_val[7], width/2 + 400, height/2 + 20);
   bezier(width/2 - 400, bezier_val[8], bezier_val[9], bezier_val[10], bezier_val[11], bezier_val[12], width/2 + 400, bezier_val[13]);
+
+
 
   if(frameCount%80 == 0){
     countdown--;
@@ -142,16 +161,21 @@ function draw() {
 
 
   if(gameOver){
-    background(0, 20);
-    text(assignment, width/2, height/2);
+    noStroke();
+    oth_fill_val+=0.5;
     input.position(10000, 10000);
     button.position(10000, 10000);
     button.mousePressed(struggle);
+
     image(hangang,0,0);
+    fill(0,255-oth_fill_val);
+    rect(0,0,width,height);
   }
 
   temp_assignment = completed_assignment;
 }
+
+let oth_fill_val = 0;
 
 let week = 0;
 let fill_val = 255;
