@@ -108,9 +108,7 @@ function draw() {
   ps.run();
 
   strokeWeight(3);
-  // text(vector_arr_inc[0].y, width/2, height/2);
-  // strokeWeight(10);
-  // point(vector_arr[0].x + vector_arr_inc[0].x, vector_arr[0].y + vector_arr_inc[0].y);
+
   for(var i = 0; i < 21; i++){
     stroke(255,0,0,rand_opac[i]);
     strokeWeight( rand_stroke_w[i]);
