@@ -2,6 +2,12 @@ let bezier_val = new Array();
 let clickState = 1;
 let input;
 let button;
+let assignment_arr = new Array("맞습니다", "네", "감사합니다", "안녕하십니까", "즐겁습니다", "좋습니다", "고맙습니다", "대단합니다", "새롭습니다", "인상적입니다", "건강하십시오", "공감합니다", "아름답습니다", "예쁩니다", "멋있습니다", "훌륭합니다", "최고입니다", "행복하십시오", "건강하십시오", "믿습니다", "화이팅");
+let countdown = 10;
+let picked_assignment = 2;
+let completed_assignment = 0;
+
+let hangang;
 
 function setup() {
   createCanvas(1000, 1000);
@@ -20,20 +26,37 @@ function setup() {
   bezier_val[12] = height/2 + 170;
   bezier_val[13] = height/2 + 60;
 
+  hangang = loadImage('assets/hangang.png');
+
   input = createInput();
   input.position(width/2 - 140, height*3/4 + 1.5);
   button = createButton("과제 제출");
   button.position(width/2 + 60, height*3/4);
-  button.mousePressed(drawName());
+  button.mousePressed(struggle);
 }
 
 function draw() {
-  noFill();
   background(0);
-  stroke(255);
+  strokeWeight(0);
+  textSize(40);
+  fill(255);
   
+  if(assignment == assignment_arr[picked_assignment] && completed_assignment < 5){ // 과제 제출에 성공 && 과제 제출량이 5미만이면 다음 과제를 낸다.
+    picked_assignment = int(random(0, 13));
+    completed_assignment++;
+    countdown = 10;
+  }
+
+  if(completed_assignment == 5){ // 과제 제출량 초기화와 카운트다운 추가
+    completed_assignment = 0;
+    countdown = 10;
+  }
+
+  text('"'+assignment_arr[picked_assignment]+'"'+"라고 말하세요."+'\n'+"제출기한은 "+countdown+"초 남았습니다.", width/4.5, height/8);
+  stroke(255);
   let clickState = 1;
 
+  noFill();
   switch(clickState){
     case -1 :
       lerpChange();
@@ -53,9 +76,33 @@ function draw() {
 
       break;
   }
+
+  if(frameCount%80 == 0){
+    countdown--;
+    if(countdown < 0){
+      countdown = 0;
+      gameOver = true;
+    }
+  }
+
+  if(gameOver){
+    background(0, 20);
+    text(assignment, width/2, height/2);
+    input.position(10000, 10000);
+    button.position(10000, 10000);
+    button.mousePressed(struggle);
+    image(hangang,0,0);
+  }
 }
 
+let gameOver = false;
 let changeSpd = 0.07;
+
+function assignment_check(){
+  if(assignment == assignment_arr[picked_assignment]){
+    return true;
+  }
+}
 
 function lerpChange(){
   if(clickState == 1){
@@ -91,11 +138,9 @@ function lerpChange(){
   }
 }
 
-function drawName(){
-  background(100);
-  textSize(30);
-  let assignment = input.value;
-
+let assignment;
+function struggle(){
+  assignment = input.value();
 }
 
 function mouseReleased(){
