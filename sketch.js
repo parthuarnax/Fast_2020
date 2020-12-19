@@ -19,7 +19,7 @@ let vector_arr_inc = new Array();
 
 function setup() {
 
-  createCanvas(1000, 1000);
+  
   bezier_val[0] = height/2 - 60;
   bezier_val[1] = height/2 - 250;
   bezier_val[2] = height/2 - 200;
@@ -59,7 +59,19 @@ function setup() {
   vector_arr[20] = createVector(868,574);
 
   for(var i = 0; i < 21; i++){
-    vector_arr_inc[i] = createVector(abs(vector_arr[i].x - eyeCenterX)/int(random(10000,60000)), abs(vector_arr[i].y - eyeCenterY)/int(random(1000,60000)));
+    vector_arr_inc[i] = createVector(vector_arr[i].x, vector_arr[i].y);
+  }
+
+  for(var i = 0; i < 21; i++){
+    rand_opac[i] = random(80,255);
+  }  
+
+  for(var i = 0; i < 21; i++){
+    rand_stroke_w[i] = random(1,6);
+  }
+
+  for(var i = 0; i < 21; i++){
+    rand_lerp[i] = random(0.0005,0.00005);
   }
 
   input = createInput();
@@ -67,8 +79,19 @@ function setup() {
   button = createButton("과제 제출");
   button.position(width/2 + 60, height*3/4);
   button.mousePressed(struggle);
+
+  ps = new ParticleSystem(createVector(width / 2, 50));
+  repeller = new Repeller(width / 2, height / 2);
+
+  createCanvas(1000, 1000);
 }
 
+let ps;
+let repeller;
+let rand_opac = new Array();
+let rand_stroke_w = new Array();
+let rand_lerp = new Array();
+let opac_val_2 = 255;
 
 function draw() {
   input.position(width/2 - 140, height*3/4 + 1.5);
@@ -77,11 +100,32 @@ function draw() {
   textSize(40);
   fill(255);
 
-  vector_arr_inc[0].x += vector_arr_inc[0].x;
-  vector_arr_inc[0].y += vector_arr_inc[0].y;
-  text(vector_arr_inc[0].y, width/2, height/2);
-  strokeWeight(10);
-  point(vector_arr[0].x + vector_arr_inc[0].x, vector_arr[0].y + vector_arr_inc[0].y);
+  ps.addParticle(mouseX, mouseY);
+  let gravity = createVector(0, 0.02);
+  ps.applyForce(gravity);
+  ps.applyRepeller(repeller);
+  repeller.display();
+  ps.run();
+
+  strokeWeight(3);
+  // text(vector_arr_inc[0].y, width/2, height/2);
+  // strokeWeight(10);
+  // point(vector_arr[0].x + vector_arr_inc[0].x, vector_arr[0].y + vector_arr_inc[0].y);
+  for(var i = 0; i < 21; i++){
+    stroke(255,0,0,rand_opac[i]);
+    strokeWeight( rand_stroke_w[i]);
+    vector_arr_inc[i].x = lerp(vector_arr_inc[i].x, eyeCenterX, rand_lerp[i]);
+    vector_arr_inc[i].y = lerp(vector_arr_inc[i].y, eyeCenterY, rand_lerp[i]);
+    line(vector_arr[i].x, vector_arr[i].y, vector_arr_inc[i].x, vector_arr_inc[i].y);
+  }
+
+  if(opac_val_2 > 3){
+    opac_val_2 = lerp(opac_val_2, 0, 0.001);
+    noStroke();
+    fill(0, opac_val_2);
+    rect(0,0,width,height);
+  }
+  fill(255);   
 
   strokeWeight(0);
   if(assignment == assignment_arr[picked_assignment] && completed_assignment < 5){ // 과제 제출에 성공 && 과제 제출량이 5미만이면 다음 과제를 낸다.
@@ -115,6 +159,24 @@ function draw() {
     text("5초간 휴식, 현재 "+week+" 주차", width/3.6, height/6);
     other_cnt += 0.013;
     if(other_cnt > 5){
+      //충혈 디밍 초기화
+      opac_val_2 = 255;
+      //아래쪽 모두 충혈 초기화
+      for(var i = 0; i < 21; i++){ 
+        vector_arr_inc[i] = createVector(vector_arr[i].x, vector_arr[i].y);
+      }
+    
+      for(var i = 0; i < 21; i++){
+        rand_opac[i] = random(80,255);
+      }  
+    
+      for(var i = 0; i < 21; i++){
+        rand_stroke_w[i] = random(1,6);
+      }
+    
+      for(var i = 0; i < 21; i++){
+        rand_lerp[i] = random(0.0005,0.00005);
+      }
       completed_assignment = 0;
     }
     countdown = 10;
@@ -130,8 +192,6 @@ function draw() {
   strokeWeight(10);
   bezier(width/2 - 400, height/2+30, bezier_val[4], bezier_val[5], bezier_val[6], bezier_val[7], width/2 + 400, height/2 + 20);
   bezier(width/2 - 400, bezier_val[8], bezier_val[9], bezier_val[10], bezier_val[11], bezier_val[12], width/2 + 400, bezier_val[13]);
-
-
 
   if(frameCount%80 == 0){
     countdown--;
