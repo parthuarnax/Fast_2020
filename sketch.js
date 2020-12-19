@@ -8,6 +8,9 @@ let picked_assignment = 2;
 let completed_assignment = 0;
 let prev_assignment = picked_assignment;
 let hangang;
+let other_cnt = 0;
+
+let vector_arr = new Array();
 
 function setup() {
   createCanvas(1000, 1000);
@@ -27,6 +30,28 @@ function setup() {
   bezier_val[13] = height/2 + 60;
   hangang = loadImage('assets/hangang.png');
 
+  vector_arr[0] = createVector(103,523);
+  vector_arr[1] = createVector(151,474);
+  vector_arr[2] = createVector(230,418);
+  vector_arr[3] = createVector(325,388);
+  vector_arr[4] = createVector(425,376);
+  vector_arr[5] = createVector(521,382);
+  vector_arr[6] = createVector(598,395);
+  vector_arr[7] = createVector(692,419);
+  vector_arr[8] = createVector(768,452);
+  vector_arr[9] = createVector(830,480);
+  vector_arr[10] = createVector(886,512);
+  vector_arr[11] = createVector(113,565);
+  vector_arr[12] = createVector(165,589);
+  vector_arr[13] = createVector(225,608);
+  vector_arr[14] = createVector(314,626);
+  vector_arr[15] = createVector(432,639);
+  vector_arr[16] = createVector(548,640);
+  vector_arr[17] = createVector(643,632);
+  vector_arr[18] = createVector(753,611);
+  vector_arr[19] = createVector(840,586);
+  vector_arr[20] = createVector(868,574);
+  completed_assignment = 5;
   input = createInput();
   input.position(width/2 - 140, height*3/4 + 1.5);
   button = createButton("과제 제출");
@@ -34,7 +59,10 @@ function setup() {
   button.mousePressed(struggle);
 }
 
+
 function draw() {
+  input.position(width/2 - 140, height*3/4 + 1.5);
+  button.position(width/2 + 60, height*3/4);
   background(0);
   strokeWeight(0);
   textSize(40);
@@ -54,7 +82,7 @@ function draw() {
     }
   }
 
-  text('"'+assignment_arr[picked_assignment]+'"'+"라고 말하세요."+'\n'+"제출기한은 "+countdown+"초 남았습니다.", width/4.5, height/8);
+  text('"'+assignment_arr[picked_assignment]+'"'+"라고 써서 제출하세요."+'\n'+"    제출기한은 "+countdown+"초 남았습니다.", width/5.6, height/8);
   textSize(25);
   text("제출한 과제 수 : "+completed_assignment, width/2 - 120, height - 170);
   stroke(255);
@@ -66,10 +94,19 @@ function draw() {
     strokeWeight(0);
     fill(255);
     textSize(40);
+    input.position(10000, 10000);
+    button.position(10000, 10000);
     text("5초간 휴식, 현재 "+week+" 주차", width/3.6, height/6);
+    other_cnt += 0.013; text(other_cnt, width/2, height/2);
+    if(other_cnt > 5){
+      completed_assignment = 0;
+    }
     countdown = 10;
+  } else {
+    other_cnt = 0;
   }
-  
+
+  noFill();
   eyeStateChange();
   strokeWeight(8);
   bezier(width/2 - 380, bezier_val[0], width/2-200, bezier_val[1], width/2+80, bezier_val[2], width/2 + 365, bezier_val[3]);
