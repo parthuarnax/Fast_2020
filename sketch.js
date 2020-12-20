@@ -79,7 +79,7 @@ function setup() {
   button = createButton("과제 제출");
   button.position(width/2 + 60, height*3/4);
   button.mousePressed(struggle);
-
+  
   ps = new ParticleSystem(createVector(width / 2, 50));
   repeller = new Repeller(width / 2, height / 2);
 
@@ -108,9 +108,7 @@ function draw() {
   ps.run();
 
   strokeWeight(3);
-  // text(vector_arr_inc[0].y, width/2, height/2);
-  // strokeWeight(10);
-  // point(vector_arr[0].x + vector_arr_inc[0].x, vector_arr[0].y + vector_arr_inc[0].y);
+
   for(var i = 0; i < 21; i++){
     stroke(255,0,0,rand_opac[i]);
     strokeWeight( rand_stroke_w[i]);
@@ -125,7 +123,7 @@ function draw() {
     fill(0, opac_val_2);
     rect(0,0,width,height);
   }
-  fill(255);   
+  fill(255);   a
 
   strokeWeight(0);
   if(assignment == assignment_arr[picked_assignment] && completed_assignment < 5){ // 과제 제출에 성공 && 과제 제출량이 5미만이면 다음 과제를 낸다.
